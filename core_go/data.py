@@ -50,6 +50,8 @@ class Core(object):
                 self.__winner = self.__turn
                 logging.info(f"Winner is {self.__winner}")
             self.__place_list.append([(x,y),self.__turn])
+            if len(self.__place_list) > 20:
+                self.__place_list = self.__place_list[-10:]
             self.__switch_turn()
             return True
         return False
