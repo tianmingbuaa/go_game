@@ -44,12 +44,17 @@ class Core(object):
     def place_stone(self, x, y):
         assert x >= 0 and x < self.__board_size, "Invalid x coordinate"
         assert y >= 0 and y < self.__board_size, "Invalid y coordinate"
+        if self.__winner != Color.EMPTY:
+            logging.warning("Game already finished, cannot place stone")
+            return False
         if self.__board[x, y] == Color.EMPTY.value:
             self.__board[x, y] = self.__turn.value
             if self.__check_win(x, y):
                 self.__winner = self.__turn
                 logging.info(f"Winner is {self.__winner}")
             self.__place_list.append([(x,y),self.__turn])
+            if len(self.__place_list) > 20:
+                self.__place_list = self.__place_list[-10:]
             self.__switch_turn()
             return True
         return False
@@ -61,6 +66,7 @@ class Core(object):
         x, y = last_move[0]
         self.__board[x, y] = Color.EMPTY.value
         self.__turn = last_move[1]
+        self.__winner = Color.EMPTY
         return True
 
     def __switch_turn(self):
